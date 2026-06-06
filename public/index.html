@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>一路向北upupup</title>
+<style>
+  :root {
+    --bg: #080d14; --surface: #0e1520;
+    --gold: #f0c060; --gold-dim: #8b6a24;
+    --text: #d4c8a8; --muted: #7a6e50;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, "PingFang SC", "Noto Serif SC", "Songti SC", serif;
+    min-height: 100vh; overflow-x: hidden;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image:
+      linear-gradient(rgba(240,192,96,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(240,192,96,0.025) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .container { position:relative; z-index:1; max-width:960px; margin:0 auto; padding:30px 20px 60px; }
+
+  .header { text-align:center; padding:60px 0 40px; }
+  .header h1 {
+    font-size:clamp(32px,6vw,52px); font-weight:900; letter-spacing:4px;
+    background:linear-gradient(135deg, #f0c060 0%, #f7d46a 30%, #f0c060 60%, #c8963e 100%);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  }
+  .header .tagline { color:var(--muted); font-size:15px; letter-spacing:8px; margin-top:10px; }
+
+  .sec-title {
+    text-align:center; font-size:22px; font-weight:700; letter-spacing:3px; color:var(--gold);
+    margin:50px 0 24px;
+  }
+  .sec-title::after {
+    content:''; display:block; width:60px; height:1px; background:var(--gold-dim);
+    margin:10px auto 0;
+  }
+
+  .projects { display:grid; grid-template-columns:repeat(2, 1fr); gap:16px; }
+  @media (max-width:600px) { .projects { grid-template-columns:1fr; } }
+  .proj-card {
+    background:var(--surface); border:1px solid #1e2a38; border-radius:12px;
+    padding:24px; transition:all 0.3s; text-decoration:none; color:inherit;
+    display:flex; flex-direction:column;
+  }
+  .proj-card:hover { border-color:var(--gold-dim); transform:translateY(-2px); box-shadow:0 8px 30px rgba(240,192,96,0.06); }
+  .proj-card .icon { font-size:32px; margin-bottom:12px; }
+  .proj-card h3 { font-size:18px; color:var(--gold); margin-bottom:6px; letter-spacing:1px; }
+  .proj-card p { font-size:13px; color:var(--muted); line-height:1.7; flex:1; }
+  .proj-card .tag {
+    display:inline-block; margin-top:12px; padding:4px 12px; border-radius:4px;
+    font-size:11px; letter-spacing:2px;
+    background:rgba(240,192,96,0.08); color:var(--gold-dim);
+  }
+
+  .wish-wall {
+    background:var(--surface); border:1px solid #1e2a38; border-radius:16px;
+    padding:30px 24px 20px; position:relative; overflow:hidden;
+  }
+  .wish-wall::before {
+    content:''; position:absolute; inset:0; opacity:0.03; pointer-events:none;
+    background:radial-gradient(ellipse at 20% 80%, #f0c060 0%, transparent 50%),
+               radial-gradient(ellipse at 80% 20%, #c8963e 0%, transparent 50%);
+  }
+  .wishes-grid {
+    display:flex; flex-wrap:wrap; gap:14px; justify-content:center;
+    position:relative; z-index:1; min-height:80px; align-items:center;
+  }
+  .wishes-empty { color:var(--muted); font-size:14px; padding:40px 0; text-align:center; width:100%; }
+
+  .note {
+    width:160px; min-height:120px; padding:16px 14px 12px;
+    position:relative; cursor:default;
+    box-shadow:2px 3px 10px rgba(0,0,0,0.4);
+    transition:transform 0.2s, box-shadow 0.2s;
+    display:flex; flex-direction:column;
+  }
+  .note:hover { transform:scale(1.04) rotate(0deg)!important; box-shadow:4px 6px 20px rgba(0,0,0,0.5); z-index:10; }
+  .note .pin {
+    position:absolute; top:4px; left:50%; transform:translateX(-50%);
+    width:10px; height:10px; border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, #f0c060, #8b6a24);
+    box-shadow:1px 1px 3px rgba(0,0,0,0.5);
+  }
+  .note .msg {
+    flex:1; font-size:14px; line-height:1.6; color:#3a2a10;
+    word-break:break-word; margin-top:4px;
+  }
+  .note .author {
+    font-size:11px; margin-top:8px; color:rgba(0,0,0,0.4); text-align:right; font-style:italic;
+  }
+  .nc0 { background:#f5e6c8; transform:rotate(-2.5deg); }
+  .nc1 { background:#fef3c7; transform:rotate(1.8deg); }
+  .nc2 { background:#fde9b5; transform:rotate(-1.2deg); }
+  .nc3 { background:#fdf2d0; transform:rotate(3deg); }
+  .nc4 { background:#f7e5ba; transform:rotate(-3.5deg); }
+  .nc5 { background:#f9edc5; transform:rotate(2.2deg); }
+  .nc6 { background:#fbecc0; transform:rotate(-0.8deg); }
+  .nc7 { background:#f3e0b0; transform:rotate(1.5deg); }
+
+  .wish-form {
+    margin-top:30px; display:flex; gap:10px; flex-wrap:wrap; position:relative; z-index:1;
+  }
+  .wish-form input, .wish-form textarea {
+    background:#0a1018; border:1px solid #1e2a38; border-radius:8px;
+    color:var(--text); padding:10px 14px; font-size:14px; outline:none; font-family:inherit;
+  }
+  .wish-form input:focus, .wish-form textarea:focus { border-color:var(--gold-dim); }
+  .wish-form input { width:140px; }
+  .wish-form textarea { flex:1; min-width:200px; height:44px; resize:none; }
+  .wish-form button {
+    padding:10px 28px; border-radius:8px; border:none;
+    background:linear-gradient(135deg, #f0c060, #c8963e); color:#1a1208;
+    font-weight:700; font-size:14px; cursor:pointer; letter-spacing:2px;
+    transition:transform 0.2s;
+  }
+  .wish-form button:hover { transform:scale(1.03); }
+
+  .footer { text-align:center; margin-top:60px; color:var(--muted); font-size:12px; letter-spacing:2px; padding-bottom:20px; }
+
+  .toast {
+    position:fixed; bottom:30px; left:50%; transform:translateX(-50%); z-index:999;
+    background:#1a1208; border:1px solid var(--gold-dim); color:var(--gold);
+    padding:10px 28px; border-radius:25px; font-size:13px;
+    opacity:0; transition:opacity 0.3s; pointer-events:none;
+  }
+  .toast.show { opacity:1; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>一路向北upupup</h1>
+    <div class="tagline">科创一路向北 · 项目聚合</div>
+  </div>
+
+  <div class="sec-title">已上线项目</div>
+  <div class="projects">
+    <a class="proj-card" href="https://vibrant-cat-production.up.railway.app" target="_blank" rel="noopener">
+      <div class="icon">📊</div>
+      <h3>股票定线评级</h3>
+      <p>五档评级：夯(顶美) → 顶级(超一线) → 人上人(一线) → npc(三流) → 拉完了(十八线)。用户提交股票，管理员评级，弹幕互动。</p>
+      <span class="tag">全栈应用</span>
+    </a>
+    <a class="proj-card" href="https://celebrated-cat-fa572e.netlify.app" target="_blank" rel="noopener">
+      <div class="icon">🎨</div>
+      <h3>交易画像生成器</h3>
+      <p>输入交易风格与偏好，AI 生成专属交易人格画像。风格化展示，分享你的交易 DNA。</p>
+      <span class="tag">AI 工具</span>
+    </a>
+    <a class="proj-card" href="https://upupup-chat-production.up.railway.app" target="_blank" rel="noopener">
+      <div class="icon">💬</div>
+      <h3>一路向北 聊天室</h3>
+      <p>实时聊天室，科创一路向北的线上讨论空间。聊市场、聊产业、聊一切。</p>
+      <span class="tag">实时通信</span>
+    </a>
+    <a class="proj-card" href="https://timely-medovik-eb66dc.netlify.app" target="_blank" rel="noopener">
+      <div class="icon">📝</div>
+      <h3>科创一路向北 博客</h3>
+      <p>深度投研文章、AI 算力产业链拆解、二级市场笔记。长期内容沉淀。</p>
+      <span class="tag">内容站</span>
+    </a>
+  </div>
+
+  <div class="sec-title">心愿墙</div>
+  <div class="wish-wall">
+    <div class="wishes-grid" id="wishesGrid"></div>
+    <div class="wish-form">
+      <input id="wishName" placeholder="你的名字" maxlength="20">
+      <textarea id="wishMsg" placeholder="写下一句话... 像便签一样钉在墙上" maxlength="280"></textarea>
+      <button id="wishBtn">钉上墙</button>
+    </div>
+  </div>
+
+  <div class="footer">一路向北upupup © 2026</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  const $ = function(id) { return document.getElementById(id); };
+  const grid = $('wishesGrid');
+  const toast = $('toast');
+  var toastTimer;
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() { toast.classList.remove('show'); }, 2200);
+  }
+
+  function makeNote(w, i) {
+    var note = document.createElement('div');
+    note.className = 'note nc' + (i % 8);
+
+    var pin = document.createElement('div');
+    pin.className = 'pin';
+
+    var msg = document.createElement('div');
+    msg.className = 'msg';
+    msg.textContent = w.message;
+
+    var author = document.createElement('div');
+    author.className = 'author';
+    author.textContent = '— ' + (w.name || '匿名');
+
+    note.appendChild(pin);
+    note.appendChild(msg);
+    note.appendChild(author);
+    return note;
+  }
+
+  function renderWishes(wishes) {
+    while (grid.firstChild) { grid.removeChild(grid.firstChild); }
+    if (wishes.length === 0) {
+      var empty = document.createElement('div');
+      empty.className = 'wishes-empty';
+      empty.textContent = '墙上还没有纸条 · 留下第一张吧 ✨';
+      grid.appendChild(empty);
+      return;
+    }
+    wishes.forEach(function(w, i) {
+      grid.appendChild(makeNote(w, i));
+    });
+  }
+
+  function loadWishes() {
+    fetch('/api/wishes')
+      .then(function(r) { return r.json(); })
+      .then(function(data) { renderWishes(data.wishes || []); })
+      .catch(function() { renderWishes([]); });
+  }
+
+  function postWish() {
+    var name = $('wishName').value.trim();
+    var message = $('wishMsg').value.trim();
+    if (!message) { showToast('写点什么再钉上墙吧 ✨'); return; }
+    fetch('/api/wishes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name || '匿名', message: message }),
+    }).then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.ok) {
+          $('wishName').value = '';
+          $('wishMsg').value = '';
+          loadWishes();
+          showToast('纸条已钉上墙 📌');
+        }
+      });
+  }
+
+  $('wishBtn').addEventListener('click', postWish);
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && document.activeElement === $('wishMsg')) {
+      e.preventDefault(); postWish();
+    }
+  });
+
+  loadWishes();
+})();
+</script>
+</body>
+</html>
